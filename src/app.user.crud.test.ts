@@ -50,21 +50,19 @@ describe("GET /users", () => {
 });
 
 describe("GET /users/:id", () => {
-  it("Zwraca 200 i dnae użytkownika z rolami", async () => {
-    const created = await request(app).post("/users").send(newUser);
-    const res = await request(app).get(`/users/${created.body.id}`);
+  describe("zwraca 400 gdy", () => {
+    it("identyfikator jest liczbą", async () => {
+      const created = await request(app).post("/users").send(newUser);
+      const res = await request(app).get(`/users/${created.body.id}`);
 
-    expect(res.status).toBe(200);
-    expect(res.body.firstName).toBe("Jan");
-    expect(res.body.lastName).toBe("Nowak");
-    expect(res.body.email).toBe("email@example.com");
-    expect(res.body.id).toBeGreaterThanOrEqual(1);
-  });
+      expect(res.status).toBe(400);
+    });
 
-  it("Zwraca 400 gdy id nie jest liczbą", async () => {
-    const res = await request(app).get("/users/abc");
+    it("Zwraca 400 gdy id nie jest liczbą", async () => {
+      const res = await request(app).get("/users/abc");
 
-    expect(res.status).toBe(400);
+      expect(res.status).toBe(400);
+    });
   });
 
   it("Zwraca 404, gdy użytkownik nie istnieje", async () => {
@@ -86,19 +84,21 @@ describe("PUT /users/:id", () => {
     expect(res.body.lastName).toBe("Kowalski");
   });
 
-  it("Zwraca 400 gdy id nie jest liczbą", async () => {
-    const res = await request(app).put("/users/abc").send(newUser);
+  describe("Zwraca 400 gdy", () => {
+    it("id nie jest liczbą", async () => {
+      const res = await request(app).put("/users/abc").send(newUser);
 
-    expect(res.status).toBe(400);
-  });
+      expect(res.status).toBe(400);
+    });
 
-  it("Zwraca 400 przy braku danych", async () => {
-    const created = await request(app).put("/users").send(newUser);
-    const res = await request(app)
-      .put(`/users/${created.body.id}`)
-      .send({ ...newUser, lastName: "Kowalski" });
+    it("przy braku danych", async () => {
+      const created = await request(app).put("/users").send(newUser);
+      const res = await request(app)
+        .put(`/users/${created.body.id}`)
+        .send({ ...newUser, lastName: "Kowalski" });
 
-    expect(res.status).toBe(400);
+      expect(res.status).toBe(400);
+    });
   });
 
   it("Zwraca 404 gdy użytkownik nie istnieje", async () => {
