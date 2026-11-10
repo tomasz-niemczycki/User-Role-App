@@ -1,6 +1,7 @@
 export class User {
   constructor(
     public id: number,
+    public uuid: string,
     public firstName: string,
     public lastName: string,
     public email: string,
@@ -8,4 +9,5 @@ export class User {
   ) {}
 }
 
-export type UserData = Omit<User, "id" | "roleIds">;
+export type UserData = Omit<User, "id" |"uuid" | "roleIds">;
+export type PublicUser = Omit<User, "id">;

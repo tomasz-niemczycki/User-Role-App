@@ -1,20 +1,26 @@
-import { User, UserData } from "../models/user.js";
+import { User, UserData, PublicUser } from "../models/user.js";
+import {randomUUID} from "node:crypto";
 
 export class UserRepository {
   private users: User[] = [];
   private nextId = 1;
 
-  getAll(): User[] {
-    return [...this.users];
+  getAll(): PublicUser[] {
+    return this.users.map(({id, ...rest}) => rest);
   }
 
   getById(id: number): User | undefined {
     return this.users.find((u) => u.id === id);
   }
 
+  getByUuid(uuid: string): User | undefined {
+    return this.users.find((u) => u.uuid === uuid);
+  }
+
   create(data: UserData, roleIds: number[]): User {
     const user = new User(
       this.nextId++,
+      randomUUID(),
       data.firstName,
       data.lastName,
       data.email,
@@ -24,8 +30,8 @@ export class UserRepository {
     return user;
   }
 
-  update(id: number, data: UserData): User | undefined {
-    const user = this.getById(id);
+  update(uuid: string, data: UserData): User | undefined {
+    const user = this.getByUuid(uuid);
     if (!user) return undefined;
     user.firstName = data.firstName;
     user.lastName = data.lastName;
@@ -33,9 +39,9 @@ export class UserRepository {
     return user;
   }
 
-  remove(id: number): boolean {
+  remove(uuid: string): boolean {
     const before = this.users.length;
-    this.users = this.users.filter((u) => u.id !== id);
+    this.users = this.users.filter((u) => u.uuid !== uuid);
     return this.users.length < before;
   }
 }

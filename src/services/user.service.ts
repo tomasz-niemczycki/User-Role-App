@@ -10,8 +10,8 @@ export const getAll = () => {
   return usersDb.getAll().map(withRoles);
 };
 
-export const getUser = (id: number) => {
-  const user = usersDb.getById(id);
+export const getUser = (uuid: string) => {
+  const user = usersDb.getByUuid(uuid);
   return user && withRoles(user);
 };
 
@@ -20,11 +20,11 @@ export const create = (data: UserData) => {
   return withRoles(user);
 };
 
-export const update = (id: number, data: UserData) => {
-  const user = usersDb.update(id, data);
+export const update = (uuid: string, data: UserData) => {
+  const user = usersDb.update(uuid, data);
   return user && withRoles(user);
 };
 
-export const remove = (id: number) => {
-  return usersDb.remove(id);
+export const remove = (uuid: string) => {
+  return usersDb.remove(uuid);
 };

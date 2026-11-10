@@ -49,11 +49,11 @@ describe("GET /users", () => {
   });
 });
 
-describe("GET /users/:id", () => {
+describe("GET /users/:uuid", () => {
   describe("zwraca 400 gdy", () => {
     it("identyfikator jest liczbą", async () => {
       const created = await request(app).post("/users").send(newUser);
-      const res = await request(app).get(`/users/${created.body.id}`);
+      const res = await request(app).get(`/users/${created.body.uuid}`);
 
       expect(res.status).toBe(400);
     });

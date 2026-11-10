@@ -1,0 +1,37 @@
+@host = http://localhost:3000
+
+### Utwórz użytkownika
+# @name create
+POST {{host}}/users
+Content-Type: application/json
+
+{
+  "firstName": "Tomasz",
+  "lastName": "Niemczycki",
+  "email": "email@example.com"
+}
+
+### Lista
+GET {{host}}/users
+
+### Jeden (uuid z odpowiedzi POST powyżej)
+GET {{host}}/users/{{create.response.body.uuid}}
+
+### Zaktualizuj
+PUT {{host}}/users/{{create.response.body.uuid}}
+Content-Type: application/json
+
+{
+  "firstName": "Tomasz",
+  "lastName": "Nowak",
+  "email": "nowy@example.com"
+}
+
+### Usuń
+DELETE {{host}}/users/{{create.response.body.uuid}}
+
+### Zły format (oczekiwane 400)
+GET {{host}}/users/abc
+
+### Poprawny uuid, którego nie ma (oczekiwane 404)
+GET {{host}}/users/00000000-0000-4000-8000-000000000000
