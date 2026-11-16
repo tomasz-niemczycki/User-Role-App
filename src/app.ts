@@ -10,3 +10,4 @@ app.get("/", (req, res) => {
 });
 
 app.use("/users", userRoutes);
+app.use("/user", userRoutes);
