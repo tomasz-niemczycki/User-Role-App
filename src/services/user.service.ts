@@ -1,10 +1,11 @@
+import { off } from "node:cluster";
 import { usersDb, rolesDb } from "../db/database.js";
 import { User, UserData, PublicUser } from "../models/user.js";
 
 const encodePassword = (password: string) =>
   Buffer.from(password, "utf8").toString("base64");
 
-const toPublic = ({ id, password, ...rest }: User): PublicUser => rest;
+const toPublic = ({ id, ...rest }: User): PublicUser => rest;
 
 const withRoles = (user: PublicUser) => {
   const { roleIds, ...rest } = user;
@@ -40,4 +41,17 @@ export const rolesExist = (roleIds: number[]) => {
 
 export const remove = (uuid: string) => {
   return usersDb.remove(uuid);
+};
+
+export const getPage = (page: number, limit: number) => {
+  const offset = (page - 1) * limit;
+  const { items, total } = usersDb.getPage(offset, limit);
+
+  return {
+    data: items.map(withRoles),
+    page,
+    limit,
+    total,
+    totalPages: Math.ceil(total / limit),
+  };
 };

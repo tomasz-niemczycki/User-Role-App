@@ -3,7 +3,22 @@ import * as userService from "../services/user.service.js";
 import { isUuid } from "../validators/uuid.js";
 
 export const getUsers = (req: Request, res: Response) => {
-  res.json(userService.getAll());
+  const page = Number(req.query.page ?? 1);
+  const limit = Number(req.query.limit ?? 10);
+
+  const valid =
+    Number.isInteger(page) &&
+    page >= 1 &&
+    Number.isInteger(limit) &&
+    limit >= 1 &&
+    limit <= 100;
+
+  if (!valid) {
+    res.status(400).json({ error: "Nieprawidłowe parametry stronicowania" });
+    return;
+  }
+
+  res.json(userService.getPage(page, limit));
 };
 
 export const getUser = (req: Request, res: Response) => {

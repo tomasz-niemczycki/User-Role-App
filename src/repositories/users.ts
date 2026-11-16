@@ -9,8 +9,15 @@ export class UserRepository {
     return this.users.map(({ id, ...rest }) => rest);
   }
 
-  getById(id: number): User | undefined {
-    return this.users.find((u) => u.id === id);
+  getPage(
+    offset: number,
+    limit: number,
+  ): { items: PublicUser[]; total: number } {
+    const items = this.users
+      .slice(offset, offset + limit)
+      .map(({ id, password, ...rest }) => rest);
+
+    return { items, total: this.users.length };
   }
 
   getByUuid(uuid: string): User | undefined {

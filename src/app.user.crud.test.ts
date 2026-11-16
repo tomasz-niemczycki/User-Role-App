@@ -33,7 +33,7 @@ describe("GET /users", () => {
     const res = await request(app).get("/users");
 
     expect(res.status).toBe(200);
-    expect(Array.isArray(res.body)).toBe(true);
+    expect(Array.isArray(res.body.data)).toBe(true);
   });
 
   it("Zwraca utworzonych użytkowników razem z rolami", async () => {
