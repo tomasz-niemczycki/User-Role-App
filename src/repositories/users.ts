@@ -15,7 +15,7 @@ export class UserRepository {
   ): { items: PublicUser[]; total: number } {
     const items = this.users
       .slice(offset, offset + limit)
-      .map(({ id, password, ...rest }) => rest);
+      .map(({ id, ...rest }) => rest);
 
     return { items, total: this.users.length };
   }
