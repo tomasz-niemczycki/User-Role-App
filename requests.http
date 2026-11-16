@@ -6,9 +6,11 @@ POST {{host}}/users
 Content-Type: application/json
 
 {
-  "firstName": "Tomasz",
-  "lastName": "Niemczycki",
-  "email": "email@example.com"
+  "firstName": "Jan",
+  "lastName": "Nowakowski",
+  "email": "email@example.com",
+  "roleIds": [2],
+  "password": "student123!@"
 }
 
 ### Lista
