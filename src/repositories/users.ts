@@ -1,12 +1,12 @@
 import { User, UserData, PublicUser } from "../models/user.js";
-import {randomUUID} from "node:crypto";
+import { randomUUID } from "node:crypto";
 
 export class UserRepository {
   private users: User[] = [];
   private nextId = 1;
 
   getAll(): PublicUser[] {
-    return this.users.map(({id, ...rest}) => rest);
+    return this.users.map(({ id, ...rest }) => rest);
   }
 
   getById(id: number): User | undefined {
@@ -17,7 +17,7 @@ export class UserRepository {
     return this.users.find((u) => u.uuid === uuid);
   }
 
-  create(data: UserData, roleIds: number[]): User {
+  create(data: UserData, roleIds: number[], password: string): User {
     const user = new User(
       this.nextId++,
       randomUUID(),
@@ -25,6 +25,7 @@ export class UserRepository {
       data.lastName,
       data.email,
       roleIds,
+      password,
     );
     this.users.push(user);
     return user;

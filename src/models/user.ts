@@ -6,8 +6,9 @@ export class User {
     public lastName: string,
     public email: string,
     public roleIds: number[],
+    public password: string,
   ) {}
 }
 
-export type UserData = Omit<User, "id" |"uuid" | "roleIds">;
-export type PublicUser = Omit<User, "id">;
+export type UserData = Omit<User, "id" | "uuid" | "roleIds" | "password">;
+export type PublicUser = Omit<User, "id" | "password">;

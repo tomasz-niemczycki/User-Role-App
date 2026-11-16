@@ -101,22 +101,22 @@ describe("PUT /users/:id", () => {
     });
   });
 
-  it("Zwraca 404 gdy użytkownik nie istnieje", async () => {
+  it("Zwraca 400 gdy użytkownik nie istnieje", async () => {
     const res = await request(app).get("/users/999").send(newUser);
 
-    expect(res.status).toBe(404);
+    expect(res.status).toBe(400);
   });
 });
 
 describe("DELETE /users/:id", () => {
   it("Usuwa użytkownika, a kolejny GET zwraca 404", async () => {
     const created = await request(app).post("/users").send(newUser);
-    const id = created.body.id;
+    const uuid = created.body.uuid;
 
-    const del = await request(app).delete(`/users/${id}`);
+    const del = await request(app).delete(`/users/${uuid}`);
     expect(del.status).toBe(204);
 
-    const get = await request(app).get(`/users/${id}`);
+    const get = await request(app).get(`/users/${uuid}`);
     expect(get.status).toBe(404);
   });
 
@@ -125,8 +125,8 @@ describe("DELETE /users/:id", () => {
     expect(res.status).toBe(400);
   });
 
-  it("Zwraca 404 dla nieistniejącego id", async () => {
+  it("Zwraca 400 dla nieistniejącego id", async () => {
     const res = await request(app).delete("/users/999");
-    expect(res.status).toBe(404);
+    expect(res.status).toBe(400);
   });
 });
