@@ -1,21 +1,24 @@
-import { Request, Response } from "express";
+import { Controller, Get, Path, Route, Tags } from "tsoa";
 import * as userService from "./user.getUser.service.js";
 import { isUuid } from "../../validators/uuid.js";
+import { BadRequestError, NotFoundError } from "../../shared/errors.js";
+import type { UserResponse } from "../../shared/user.dto.js";
 
-export const getUser = (req: Request, res: Response) => {
-  const uuid = req.params.uuid;
+@Route("users")
+@Tags("Users")
+export class GetUserController extends Controller {
+  @Get("{uuid}")
+  public async getUser(@Path() uuid: string): Promise<UserResponse> {
+    if (!isUuid(uuid)) {
+      throw new BadRequestError("Nieprawidłowe ID");
+    }
 
-  if (!isUuid(uuid)) {
-    res.status(400).json({ error: "Nieprawidłowe ID" });
-    return;
+    const user = userService.getUser(uuid);
+
+    if (!user) {
+      throw new NotFoundError("Nie ma takiego użytkownika");
+    }
+
+    return user;
   }
-
-  const user = userService.getUser(uuid);
-
-  if (!user) {
-    res.status(404).json({ error: "Nie ma takiego użytkownika" });
-    return;
-  }
-
-  res.json(user);
-};
+}

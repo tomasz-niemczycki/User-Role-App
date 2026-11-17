@@ -1,21 +1,32 @@
-import { Request, Response } from "express";
+import { Body, Controller, Path, Put, Route, Tags } from "tsoa";
 import * as userService from "./user.putUser.service.js";
 import { isUuid } from "../../validators/uuid.js";
+import { BadRequestError, NotFoundError } from "../../shared/errors.js";
+import type { PutUserRequest } from "./user.putUser.dto.js";
+import type { UserResponse } from "../../shared/user.dto.js";
 
-export const updateUser = (req: Request, res: Response) => {
-  const uuid = req.params.uuid;
-  const { firstName, lastName, email } = req.body;
+@Route("users")
+@Tags("Users")
+export class PutUserController extends Controller {
+  @Put("{uuid}")
+  public async updateUser(
+    @Path() uuid: string,
+    @Body() body: PutUserRequest,
+  ): Promise<UserResponse> {
+    if (!isUuid(uuid)) {
+      throw new BadRequestError("Nieprawidłowe dane");
+    }
 
-  if (!isUuid(uuid) || !firstName || !lastName || !email) {
-    res.status(400).json({ error: "Nieprawidłowe dane" });
-    return;
+    const user = userService.update(uuid, {
+      firstName: body.firstName,
+      lastName: body.lastName,
+      email: body.email,
+    });
+
+    if (!user) {
+      throw new NotFoundError("Nie ma takiego użytkownika");
+    }
+
+    return user;
   }
-
-  const user = userService.update(uuid, { firstName, lastName, email });
-
-  if (!user) {
-    res.status(404).json({ error: "Nie ma takiego użytkownika" });
-  }
-
-  res.json(user);
-};
+}

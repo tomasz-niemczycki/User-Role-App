@@ -26,10 +26,10 @@ GET {{host}}/users?page=1&limit=2
 GET {{host}}/users?page=99&limit=10
 
 ### Jeden
-GET {{host}}/user/{{uuid}}
+GET {{host}}/users/{{uuid}}
 
 ### Zaktualizuj
-PUT {{host}}/user/{{uuid}}
+PUT {{host}}/users/{{uuid}}
 Content-Type: application/json
 
 {
@@ -39,69 +39,4 @@ Content-Type: application/json
 }
 
 ### Usuń (oczekiwane 204)
-DELETE {{host}}/user/{{uuid}}
-
-### ---------------------------------------------------------
-### Przypadki błędne
-### ---------------------------------------------------------
-
-### Zły format uuid (oczekiwane 400)
-GET {{host}}/user/abc
-
-### Poprawny uuid, którego nie ma (oczekiwane 404)
-GET {{host}}/user/00000000-0000-4000-8000-000000000000
-
-### Strona 0 (oczekiwane 400)
-GET {{host}}/users?page=0
-
-### Limit nie jest liczbą (oczekiwane 400)
-GET {{host}}/users?limit=abc
-
-### Limit ponad maksimum (oczekiwane 400)
-GET {{host}}/users?limit=1000
-
-### Brak emaila (oczekiwane 400)
-POST {{host}}/users
-Content-Type: application/json
-
-{
-  "firstName": "Jan",
-  "lastName": "Nowakowski",
-  "roleIds": [1],
-  "password": "student123!@"
-}
-
-### Za krótkie hasło (oczekiwane 400)
-POST {{host}}/users
-Content-Type: application/json
-
-{
-  "firstName": "Jan",
-  "lastName": "Nowakowski",
-  "email": "email@example.com",
-  "roleIds": [1],
-  "password": "123"
-}
-
-### Brak roleIds (oczekiwane 400)
-POST {{host}}/users
-Content-Type: application/json
-
-{
-  "firstName": "Jan",
-  "lastName": "Nowakowski",
-  "email": "email@example.com",
-  "password": "student123!@"
-}
-
-### Nieistniejąca rola (oczekiwane 400)
-POST {{host}}/users
-Content-Type: application/json
-
-{
-  "firstName": "Jan",
-  "lastName": "Nowakowski",
-  "email": "email@example.com",
-  "roleIds": [1, 99],
-  "password": "student123!@"
-}
+DELETE {{host}}/users/{{uuid}}

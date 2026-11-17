@@ -6,7 +6,7 @@ export class UserRepository {
   private nextId = 1;
 
   getAll(): PublicUser[] {
-    return this.users.map(({ id, ...rest }) => rest);
+    return this.users.map(({ id, password, ...rest }) => rest);
   }
 
   getPage(

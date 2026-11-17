@@ -1,19 +1,22 @@
-import { Request, Response } from "express";
+import { Controller, Delete, Path, Route, SuccessResponse, Tags } from "tsoa";
 import * as userService from "./user.deleteUser.service.js";
 import { isUuid } from "../../validators/uuid.js";
+import { BadRequestError, NotFoundError } from "../../shared/errors.js";
 
-export const deleteUser = (req: Request, res: Response) => {
-  const uuid = req.params.uuid;
+@Route("users")
+@Tags("Users")
+export class DeleteUserController extends Controller {
+  @Delete("{uuid}")
+  @SuccessResponse("204", "No Content")
+  public async deleteUser(@Path() uuid: string): Promise<void> {
+    if (!isUuid(uuid)) {
+      throw new BadRequestError("Nieprawidłowe ID");
+    }
 
-  if (!isUuid(uuid)) {
-    res.status(400).json({ error: "Nieprawidłowe ID" });
-    return;
+    if (!userService.remove(uuid)) {
+      throw new NotFoundError("Nie ma takiego użytkownika");
+    }
+
+    this.setStatus(204);
   }
-
-  if (!userService.remove(uuid)) {
-    res.status(404).json({ error: "Nie ma takiego użytkownika" });
-    return;
-  }
-
-  res.status(204).send();
-};
+}

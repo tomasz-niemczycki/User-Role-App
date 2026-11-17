@@ -1,21 +1,22 @@
-import { Request, Response } from "express";
+import { Controller, Get, Query, Route, Tags } from "tsoa";
 import getPage from "../../shared/getPage.js";
+import type { UsersPageResponse } from "../../shared/user.dto.js";
 
-export const getUsers = (req: Request, res: Response) => {
-  const page = Number(req.query.page ?? 1);
-  const limit = Number(req.query.limit ?? 10);
-
-  const valid =
-    Number.isInteger(page) &&
-    page >= 1 &&
-    Number.isInteger(limit) &&
-    limit >= 1 &&
-    limit <= 100;
-
-  if (!valid) {
-    res.status(400).json({ error: "Nieprawidłowe parametry stronicowania" });
-    return;
+@Route("users")
+@Tags("Users")
+export class GetUsersController extends Controller {
+  /**
+   * @isInt page
+   * @minimum page 1
+   * @isInt limit
+   * @minimum limit 1
+   * @maximum limit 100
+   */
+  @Get()
+  public async getUsers(
+    @Query() page: number = 1,
+    @Query() limit: number = 10,
+  ): Promise<UsersPageResponse> {
+    return getPage(page, limit);
   }
-
-  res.json(getPage(page, limit));
-};
+}
