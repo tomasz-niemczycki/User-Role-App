@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import getPage from "../features/getPage.js";
+import getPage from "../../shared/getPage.js";
 
 export const getUsers = (req: Request, res: Response) => {
   const page = Number(req.query.page ?? 1);

@@ -1,5 +1,5 @@
 import { usersDb } from "../db/database.js";
-import withRoles from "../features/addingRoles.js";
+import withRoles from "./addingRoles.js";
 
 export const getPage = (page: number, limit: number) => {
   const offset = (page - 1) * limit;

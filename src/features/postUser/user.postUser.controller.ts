@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import * as userService from "../services/user.postUser.service.js";
-import rolesExist from "../features/areRolesExist.js";
+import * as userService from "./user.postUser.service.js";
+import rolesExist from "../../shared/areRolesExist.js";
 
 export const createUser = (req: Request, res: Response) => {
   const { firstName, lastName, email, roleIds, password } = req.body;

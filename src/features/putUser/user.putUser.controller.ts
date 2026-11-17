@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import * as userService from "../services/user.putUser.service.js";
-import { isUuid } from "../validators/uuid.js";
+import * as userService from "./user.putUser.service.js";
+import { isUuid } from "../../validators/uuid.js";
 
 export const updateUser = (req: Request, res: Response) => {
   const uuid = req.params.uuid;

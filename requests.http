@@ -13,14 +13,23 @@ Content-Type: application/json
   "password": "student123!@"
 }
 
-### Lista
+### uuid z odpowiedzi POST powyżej
+@uuid = {{create.response.body.$.uuid}}
+
+### Lista (domyślnie strona 1, limit 10)
 GET {{host}}/users
 
-### Jeden (uuid z odpowiedzi POST powyżej)
-GET {{host}}/users/{{create.response.body.uuid}}
+### Stronicowanie
+GET {{host}}/users?page=1&limit=2
+
+### Strona poza zakresem (oczekiwane: data = [])
+GET {{host}}/users?page=99&limit=10
+
+### Jeden
+GET {{host}}/user/{{uuid}}
 
 ### Zaktualizuj
-PUT {{host}}/users/{{create.response.body.uuid}}
+PUT {{host}}/user/{{uuid}}
 Content-Type: application/json
 
 {
@@ -29,11 +38,70 @@ Content-Type: application/json
   "email": "nowy@example.com"
 }
 
-### Usuń
-DELETE {{host}}/users/{{create.response.body.uuid}}
+### Usuń (oczekiwane 204)
+DELETE {{host}}/user/{{uuid}}
 
-### Zły format (oczekiwane 400)
-GET {{host}}/users/abc
+### ---------------------------------------------------------
+### Przypadki błędne
+### ---------------------------------------------------------
+
+### Zły format uuid (oczekiwane 400)
+GET {{host}}/user/abc
 
 ### Poprawny uuid, którego nie ma (oczekiwane 404)
-GET {{host}}/users/00000000-0000-4000-8000-000000000000
+GET {{host}}/user/00000000-0000-4000-8000-000000000000
+
+### Strona 0 (oczekiwane 400)
+GET {{host}}/users?page=0
+
+### Limit nie jest liczbą (oczekiwane 400)
+GET {{host}}/users?limit=abc
+
+### Limit ponad maksimum (oczekiwane 400)
+GET {{host}}/users?limit=1000
+
+### Brak emaila (oczekiwane 400)
+POST {{host}}/users
+Content-Type: application/json
+
+{
+  "firstName": "Jan",
+  "lastName": "Nowakowski",
+  "roleIds": [1],
+  "password": "student123!@"
+}
+
+### Za krótkie hasło (oczekiwane 400)
+POST {{host}}/users
+Content-Type: application/json
+
+{
+  "firstName": "Jan",
+  "lastName": "Nowakowski",
+  "email": "email@example.com",
+  "roleIds": [1],
+  "password": "123"
+}
+
+### Brak roleIds (oczekiwane 400)
+POST {{host}}/users
+Content-Type: application/json
+
+{
+  "firstName": "Jan",
+  "lastName": "Nowakowski",
+  "email": "email@example.com",
+  "password": "student123!@"
+}
+
+### Nieistniejąca rola (oczekiwane 400)
+POST {{host}}/users
+Content-Type: application/json
+
+{
+  "firstName": "Jan",
+  "lastName": "Nowakowski",
+  "email": "email@example.com",
+  "roleIds": [1, 99],
+  "password": "student123!@"
+}
